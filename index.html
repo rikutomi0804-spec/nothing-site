@@ -1,82 +1,336 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>何もないサイト</title>
-<style>
-    body {
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        font-family: sans-serif;
-    }
 
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: sans-serif;
+            transition: background-color 0.2s;
+        }
 
-    h1 {
-        font-size: 48px;
-        margin-bottom: 30px;
-    }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    button {
-        font-size: 20px;
-        padding: 12px 25px;
-        cursor: pointer;
-    }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
 
-    #message {
-        font-size: 22px;
-        margin-top: 25px;
-    }
-</style>
+        button {
+            font-size: 20px;
+            padding: 12px 25px;
+            cursor: pointer;
+        }
+
+        #message {
+            font-size: 22px;
+            margin-top: 25px;
+            min-height: 30px;
+        }
+
+        .stats {
+            margin-top: 40px;
+            padding: 20px 30px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .stats-title {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .note {
+            margin-top: 15px;
+            font-size: 12px;
+            color: gray;
+        }
+
+        /* ホラー演出用 */
+        #horrorScreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            color: white;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 28px;
+        }
+
+        #horrorText {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
+
 <body>
 
     <div class="container">
 
-    <h1>ここには何もありません。</h1>
+        <h1>ここには何もありません。</h1>
 
-    <button onclick="check()">確認する</button>
+        <button onclick="check()">確認する</button>
 
-    <p id="message"></p>
+        <p id="message"></p>
 
-</div>
+        <div class="stats">
 
-<script>
-let count = 0;
+            <div class="stats-title">📊 無駄な統計</div>
 
-function check() {
-    count++;
+            <div>
+                👀 現在の訪問者：
+                <span id="visitors">1</span>人
+            </div>
 
-    if (count === 1) {
-        document.getElementById("message").textContent = "確認しました。やはり何もありません。";
-    } else if (count === 2) {
-        document.getElementById("message").textContent = "……何もありません。";
-    } else if (count === 3) {
-        document.getElementById("message").textContent = "まだ確認しますか？";
-    } else if (count === 4) {
-        document.getElementById("message").textContent = "何を期待しているんですか？";
-    } else if (count === 5) {
-        document.getElementById("message").textContent = "ここまで来るとは思いませんでした。";
-    } else if (count === 6) {
-        document.getElementById("message").textContent = "本当に何もないですよ。";
-    } else if (count === 7) {
-        document.getElementById("message").textContent = "そろそろやめません？";
-    } else if (count === 8) {
-        document.getElementById("message").textContent = "……。";
-    } else if (count === 9) {
-        document.getElementById("message").textContent = "あと1回です。";
-    } else if (count === 10) {
-        document.getElementById("message").textContent = "🎉 おめでとうございます！何もありません！ 🎉";
-    }
-}
-</script>
+            <div>
+                ⏱️ このサイトを見ている時間：
+                <span id="time">0</span>秒
+            </div>
+
+            <div>
+                🔘 「確認する」を押した回数：
+                <span id="clicks">0</span>回
+            </div>
+
+            <div>
+                🧠 発見されたもの：0個
+            </div>
+
+            <div>
+                📦 このサイトにあるもの：何もない
+            </div>
+
+            <div>
+                📈 何もない度：
+                <span id="nothingPercent">100</span>%
+            </div>
+
+            <div class="note">
+                ※これらの統計には何の意味もありません。
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ホラー画面 -->
+
+    <div id="horrorScreen">
+
+        <div id="horrorText">……</div>
+
+    </div>
+
+
+    <script>
+
+        let count = 0;
+        let seconds = 0;
+
+
+        // 普通のメッセージ
+
+        const messages = [
+
+            "確認しました。やはり何もありません。",
+            "……何もありません。",
+            "まだ確認しますか？",
+            "何を期待しているんですか？",
+            "ここまで来るとは思いませんでした。",
+            "本当に何もないですよ。",
+            "そろそろやめません？",
+            "……。",
+            "あと1回です。",
+            "🎉 おめでとうございます！何もありません！ 🎉",
+
+            "確認する場所を間違えている可能性があります。",
+            "何もないことを確認しました。",
+            "スタッフに確認しました。何もないそうです。",
+            "現在、何もない状態を維持しています。",
+            "ここに何かあると思ったんですか？",
+            "確認作業の成果：何もなし。",
+            "今日も何もありません。",
+            "押しても何もありません。",
+            "何もありません。安心してください。",
+            "あなたの時間だけが過ぎています。",
+
+            "……本当に押します？",
+            "押しましたね。",
+            "また押しましたね。",
+            "まだ押してますね。",
+            "暇なんですか？",
+            "その情熱を別のことに使いませんか？",
+            "ボタンの気持ちも考えてあげてください。",
+            "ボタン「そろそろ休ませて」",
+            "あなたは何を目指しているんですか？",
+
+            "エラー：何も見つかりませんでした。",
+            "エラー：何もありません。",
+            "エラー：正常に何もありません。",
+            "システムは正常です。何もありません。",
+            "検索結果：0件",
+            "データを確認中……ありませんでした。",
+            "重要なお知らせ：特にありません。",
+            "緊急速報：何もありません。",
+            "ニュース：今日も何もありません。",
+            "最新情報：特に変化なし。",
+
+            "もしかしたら何かあるかも……ありません。",
+            "少し期待しました？",
+            "期待に応えられなくてすみません。",
+            "確認回数だけが増えています。",
+            "このサイトは今日も平和です。",
+            "何もない。それがすべてです。",
+            "ここまで来たなら最後までどうぞ。",
+            "……まだ押すんだ。"
+        ];
+
+
+        // 「確認する」ボタン
+
+        function check() {
+
+            count++;
+
+            document.getElementById("clicks").textContent = count;
+
+
+            // 何もない度を無駄に増やす
+
+            let percent = 100 + Math.floor(count / 3);
+
+            document.getElementById("nothingPercent").textContent =
+                percent;
+
+
+            // 10回までは順番に表示
+
+            if (count <= messages.length) {
+
+                document.getElementById("message").textContent =
+                    messages[count - 1];
+
+            } else {
+
+                // 11回目以降はランダム
+
+                const randomMessage =
+                    messages[Math.floor(Math.random() * messages.length)];
+
+                document.getElementById("message").textContent =
+                    randomMessage;
+
+            }
+
+
+            // ホラーイベント判定
+
+            horrorEvent();
+
+        }
+
+
+        // ホラーイベント
+
+        function horrorEvent() {
+
+            // 3%の確率で暗転
+
+            const chance = Math.random();
+
+            if (chance < 0.03) {
+
+                startHorror();
+
+            }
+
+        }
+
+
+        // 暗転演出
+
+        function startHorror() {
+
+            const screen =
+                document.getElementById("horrorScreen");
+
+            const text =
+                document.getElementById("horrorText");
+
+
+            screen.style.display = "flex";
+
+            text.textContent = "……";
+
+
+            // 1秒後
+
+            setTimeout(function () {
+
+                text.textContent =
+                    "確認しています……";
+
+            }, 1000);
+
+
+            // 2秒後
+
+            setTimeout(function () {
+
+                text.textContent =
+                    "何もありません。";
+
+            }, 2000);
+
+
+            // 3秒後に戻る
+
+            setTimeout(function () {
+
+                screen.style.display = "none";
+
+            }, 3000);
+
+        }
+
+
+        // サイトを開いてからの時間
+
+        setInterval(function () {
+
+            seconds++;
+
+            document.getElementById("time").textContent =
+                seconds;
+
+        }, 1000);
+
+
+    </script>
+
 </body>
+
 </html>
