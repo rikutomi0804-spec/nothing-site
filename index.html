@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>何もないサイト</title>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-family: sans-serif;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 48px;
+        margin-bottom: 30px;
+    }
+
+    button {
+        font-size: 20px;
+        padding: 12px 25px;
+        cursor: pointer;
+    }
+
+    #message {
+        font-size: 22px;
+        margin-top: 25px;
+    }
+</style>
+</head>
+<body>
+
+    <div class="container">
+
+    <h1>ここには何もありません。</h1>
+
+    <button onclick="check()">確認する</button>
+
+    <p id="message"></p>
+
+</div>
+
+<script>
+let count = 0;
+
+function check() {
+    count++;
+
+    if (count === 1) {
+        document.getElementById("message").textContent = "確認しました。やはり何もありません。";
+    } else if (count === 2) {
+        document.getElementById("message").textContent = "……何もありません。";
+    } else if (count === 3) {
+        document.getElementById("message").textContent = "まだ確認しますか？";
+    } else if (count === 4) {
+        document.getElementById("message").textContent = "何を期待しているんですか？";
+    } else if (count === 5) {
+        document.getElementById("message").textContent = "ここまで来るとは思いませんでした。";
+    } else if (count === 6) {
+        document.getElementById("message").textContent = "本当に何もないですよ。";
+    } else if (count === 7) {
+        document.getElementById("message").textContent = "そろそろやめません？";
+    } else if (count === 8) {
+        document.getElementById("message").textContent = "……。";
+    } else if (count === 9) {
+        document.getElementById("message").textContent = "あと1回です。";
+    } else if (count === 10) {
+        document.getElementById("message").textContent = "🎉 おめでとうございます！何もありません！ 🎉";
+    }
+}
+</script>
+</body>
+</html>
